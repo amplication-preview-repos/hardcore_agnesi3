@@ -1,0 +1,43 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Transactions {
+  createdAt      DateTime                   @default(now())
+  dateTime       DateTime?
+  id             String                     @id @default(cuid())
+  itemsCatalog   ItemsCatalog?              @relation(fields: [itemsCatalogId], references: [id])
+  itemsCatalogId String?
+  quantity       Int?
+  typeField      EnumTransactionsTypeField?
+  updatedAt      DateTime                   @updatedAt
+  warehouse      Warehouse?                 @relation(fields: [warehouseId], references: [id])
+  warehouseId    String?
+}
+
+model ItemsCatalog {
+  createdAt         DateTime       @default(now())
+  description       String?
+  id                String         @id @default(cuid())
+  name              String?
+  sku               String?
+  transactionsItems Transactions[]
+  updatedAt         DateTime       @updatedAt
+}
+
+model Warehouse {
+  createdAt         DateTime       @default(now())
+  id                String         @id @default(cuid())
+  location          String?
+  transactionsItems Transactions[]
+  updatedAt         DateTime       @updatedAt
+}
+
+enum EnumTransactionsTypeField {
+  Option1
+}
